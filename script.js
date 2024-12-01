@@ -34,6 +34,7 @@ function settingTime() {
 const timerId = setInterval(settingTime, 1000);
 
 function resetData() {
+    clearInterval(timerId);
     correctCount.textContent = 0;
     wrongCount.textContent = 0;
     seconds = 0;
@@ -77,17 +78,15 @@ function renderWords() {
             if (wordMistakes.textContent > 0) {
                 ++wrongCount.textContent;
                 if (wrongCount.textContent == 5) {
-                    clearInterval(timerId);
-                    alert(`Вы проиграли! Ваше время: ${timer.textContent}`);
                     resetData();
+                    alert(`Вы проиграли! Ваше время: ${timer.textContent}`);
                 }
 
             } else {
                 ++correctCount.textContent;
                 if (correctCount.textContent == 5) {
-                    clearInterval(timerId);
-                    alert(`Победа! Ваше время: ${timer.textContent}`);
                     resetData();
+                    alert(`Победа! Ваше время: ${timer.textContent}`);
                 }
             }
             word.innerHTML = "";
