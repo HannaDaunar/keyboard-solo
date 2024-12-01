@@ -34,12 +34,10 @@ function settingTime() {
 const timerId = setInterval(settingTime, 1000);
 
 function resetData() {
-    clearInterval(timerId);
     correctCount.textContent = 0;
     wrongCount.textContent = 0;
     seconds = 0;
     minutes = 0;
-    setInterval(settingTime, 1000);
 }
 
 function renderWords() {
@@ -74,7 +72,10 @@ function renderWords() {
         }
 
         if (index === newWord.length) {
-            console.log(wordMistakes.textContent);
+            word.innerHTML = "";
+            wordMistakes.textContent = 0;
+            renderWords();
+
             if (wordMistakes.textContent > 0) {
                 ++wrongCount.textContent;
                 if (wrongCount.textContent == 5) {
@@ -89,9 +90,7 @@ function renderWords() {
                     alert(`Победа! Ваше время: ${timer.textContent}`);
                 }
             }
-            word.innerHTML = "";
-            wordMistakes.textContent = 0;
-            renderWords();
+
         }
 
     })
