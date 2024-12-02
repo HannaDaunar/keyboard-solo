@@ -1,10 +1,5 @@
 const words = ["table", "water", "forever", "without", "sandwich"];
 const word = document.querySelector(".word");
-
-function generateRandomValue(min, max) {
-    const number = Math.random() * (max - min) + min;
-    return +number.toFixed();
-}
 const correctCount = document.querySelector(".correct-count");
 const wrongCount = document.querySelector(".wrong-count");
 const wordMistakes = document.querySelector(".word-mistakes");
@@ -30,9 +25,6 @@ function settingTime() {
     timer.textContent = `${format(minutes)}:${format(seconds)}`;
 }
 
-
-const timerId = setInterval(settingTime, 1000);
-
 function resetData() {
     correctCount.textContent = 0;
     wrongCount.textContent = 0;
@@ -40,61 +32,74 @@ function resetData() {
     minutes = 0;
 }
 
-function renderWords() {
+function generateRandomValue(min, max) {
+    const number = Math.random() * (max - min) + min;
+    return +number.toFixed();
+}
 
-    let newWord = words[generateRandomValue(0, words.length - 1)];
+const newWord = function() {
+    return words[generateRandomValue(0, words.length - 1)];
+}
 
+function renderWords(w) {
     const fragment = new DocumentFragment();
-    for (let i = 0; i < newWord.length; i++) {
+    for (let i = 0; i < w.length; i++) {
         const character = document.createElement('span');
         character.classList.add('symbol');
-        character.textContent = newWord[i];
+        character.textContent = w[i];
         fragment.append(character);
     }
-
     word.append(fragment);
+}
 
+function gameOver() {
+    if (wrongCount.textContent == 5) {
+        alert(`Вы проиграли! Ваше время: ${timer.textContent}`);
+        resetData();
+    }
+    if (correctCount.textContent == 5) {
+        alert(`Победа! Ваше время: ${timer.textContent}`);
+        resetData();
+    }
+}
+
+function nextWord() {
+    word.innerHTML = "";
+    wordMistakes.textContent = 0;
+    index = 0;
+    newWord();
+    renderWords(newWord());
+    gameOver();
+}
+
+const timerId = setInterval(settingTime, 1000);
+
+renderWords(newWord());
+
+let index = 0;
+
+document.addEventListener("keydown", function(event) {
     const characters = word.querySelectorAll("span");
     const arrCharacters = Array.from(characters);
 
-    let index = 0;
-
-    document.addEventListener("keydown", function(event) {
-
-        if (event.key === newWord[index]) {
-            arrCharacters[index].classList.add("c");
-            arrCharacters[index].classList.remove("w");
-            index++;
-
-        } else {
+    if (event.key === arrCharacters[index].textContent) {
+        arrCharacters[index].classList.add("c");
+        arrCharacters[index].classList.remove("w");
+        index++;
+    } else {
+        if (!arrCharacters[index].classList.contains("w")) {
             arrCharacters[index].classList.add("w");
-            ++wordMistakes.textContent;
         }
+        ++wordMistakes.textContent;
+    }
 
-        if (index === newWord.length) {
-            word.innerHTML = "";
-            wordMistakes.textContent = 0;
-            renderWords();
-
-            if (wordMistakes.textContent > 0) {
-                ++wrongCount.textContent;
-                if (wrongCount.textContent == 5) {
-                    resetData();
-                    alert(`Вы проиграли! Ваше время: ${timer.textContent}`);
-                }
-
-            } else {
-                ++correctCount.textContent;
-                if (correctCount.textContent == 5) {
-                    resetData();
-                    alert(`Победа! Ваше время: ${timer.textContent}`);
-                }
-            }
-
+    if (index === arrCharacters.length) {
+        if (wordMistakes.textContent > 0) {
+            ++wrongCount.textContent;
+        } else {
+            ++correctCount.textContent;
         }
+        setTimeout(nextWord, 0);
+    }
 
-    })
-
-}
-
-renderWords();
+})
