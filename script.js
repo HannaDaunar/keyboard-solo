@@ -67,7 +67,6 @@ function nextWord() {
     word.innerHTML = "";
     wordMistakes.textContent = 0;
     index = 0;
-    newWord();
     renderWords(newWord());
     gameOver();
 }
